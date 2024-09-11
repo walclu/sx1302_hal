@@ -1,7 +1,7 @@
 {
     "SX130x_conf": {
         "com_type": "SPI",
-        "com_path": "/dev/spidev0.0",
+        "com_path": "/dev/spidev1.0",
         "lorawan_public": true,
         "clksrc": 0,
         "antenna_gain": 0, /* antenna gain, in dBi */
@@ -11,7 +11,7 @@
             "mode": "all_sf" /* high_capacity or all_sf */
         },
         "sx1261_conf": {
-            "spi_path": "/dev/spidev0.1",
+            "spi_path": "/dev/spidev1.1",
             "rssi_offset": 0, /* dB */
             "spectral_scan": {
                 "enable": false,
