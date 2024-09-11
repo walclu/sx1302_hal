@@ -29,8 +29,6 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 #define LGW_I2C_SUCCESS     0
 #define LGW_I2C_ERROR       -1
 
-#define I2C_DEVICE          "/dev/i2c-1"
-
 /* -------------------------------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS PROTOTYPES ------------------------------------------ */
 
@@ -69,6 +67,16 @@ int i2c_linuxdev_read(int i2c_fd, uint8_t device_addr, uint8_t reg_addr, uint8_t
 @return 0 if I2C data write is successful, -1 else
 */
 int i2c_linuxdev_write(int i2c_fd, uint8_t device_addr, uint8_t reg_addr, uint8_t data);
+
+/**
+@brief Read a raw buffer from an I2C port
+@param i2c_fd       I2C port file descriptor index
+@param device_addr  I2C device address
+@param buffer       Buffer to be read fron the device
+@param size         Size of the buffer to be read
+@return 0 if I2C data read is successful, -1 else
+*/
+int i2c_linuxdev_read_buffer(int i2c_fd, uint8_t device_addr, uint8_t *buffer, uint8_t size);
 
 /**
 @brief Write a raw buffer to an I2C port

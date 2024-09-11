@@ -410,6 +410,12 @@ static int parse_SX130x_configuration(const char * conf_file) {
         MSG("WARNING: Data type for full_duplex seems wrong, please check\n");
         boardconf.full_duplex = false;
     }
+    str = json_object_get_string(conf_obj, "i2c_path");
+    if (str == NULL) {
+        str = "/dev/i2c-0";
+    }
+    strncpy(boardconf.i2c_path, str, sizeof boardconf.i2c_path);
+    boardconf.i2c_path[sizeof boardconf.i2c_path - 1] = '\0'; /* ensure string termination */
     MSG("INFO: com_type %s, com_path %s, lorawan_public %d, clksrc %d, full_duplex %d\n", (boardconf.com_type == LGW_COM_SPI) ? "SPI" : "USB", boardconf.com_path, boardconf.lorawan_public, boardconf.clksrc, boardconf.full_duplex);
     /* all parameters parsed, submitting configuration to the HAL */
     if (lgw_board_setconf(&boardconf) != LGW_HAL_SUCCESS) {
@@ -1480,6 +1486,7 @@ int main(int argc, char ** argv)
     /* SX1302 data variables */
     uint32_t trig_tstamp;
     uint32_t inst_tstamp;
+    uint32_t last_inst_tstamp = 0;
     uint64_t eui;
     float temperature;
 
@@ -1890,6 +1897,33 @@ int main(int argc, char ** argv)
         }
         report_ready = true;
         pthread_mutex_unlock(&mx_stat_rep);
+
+        if (inst_tstamp == last_inst_tstamp) {
+            printf("### Instant timestamp hanging - resetting ###\n");
+            pthread_mutex_lock(&mx_concent);
+            if (com_type == LGW_COM_SPI) {
+                /* Board reset */
+                if (system("./reset_lgw.sh start") != 0) {
+                    printf("ERROR: failed to reset SX1302, check your reset_lgw.sh script\n");
+                    exit(EXIT_FAILURE);
+                }
+            } else {
+                printf("ERROR: can only reset in SPI mode - exiting\n");
+                break;
+            }
+
+            /* starting the concentrator */
+            i = lgw_start();
+            if (i == LGW_HAL_SUCCESS) {
+                MSG("INFO: [main] concentrator started, packet can now be received\n");
+            } else {
+                MSG("ERROR: [main] failed to start the concentrator\n");
+                exit(EXIT_FAILURE);
+            }
+            pthread_mutex_unlock(&mx_concent);
+        }
+        last_inst_tstamp = inst_tstamp;
+
     }
 
     /* wait for all threads with a COM with the concentrator board to finish (1 fetch cycle max) */

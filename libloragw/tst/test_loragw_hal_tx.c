@@ -443,6 +443,8 @@ int main(int argc, char **argv)
     boardconf.com_type = com_type;
     strncpy(boardconf.com_path, com_path, sizeof boardconf.com_path);
     boardconf.com_path[sizeof boardconf.com_path - 1] = '\0'; /* ensure string termination */
+    strncpy(boardconf.i2c_path, "/dev/i2c-0", sizeof boardconf.i2c_path);
+    boardconf.i2c_path[sizeof boardconf.i2c_path - 1] = '\0'; /* ensure string termination */
     if (lgw_board_setconf(&boardconf) != LGW_HAL_SUCCESS) {
         printf("ERROR: failed to configure board\n");
         return EXIT_FAILURE;

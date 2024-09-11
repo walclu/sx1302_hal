@@ -1,23 +1,16 @@
 /*
- / _____)             _              | |
-( (____  _____ ____ _| |_ _____  ____| |__
- \____ \| ___ |    (_   _) ___ |/ ___)  _ \
- _____) ) ____| | | || |_| ____( (___| | | |
-(______/|_____)_|_|_| \__)_____)\____)_| |_|
-  (C)2019 Semtech
 
 Description:
-    Basic driver for ST ts751 temperature sensor
+    Basic driver for the AT30TS74 temperature sensor
 
-License: Revised BSD License, see LICENSE.TXT file include in the project
+License: Revised BSD License, see LICENSE.TXT file included in the project
 */
 
-
-#ifndef _LORAGW_STTS751_H
-#define _LORAGW_STTS751_H
+#ifndef _LORAGW_AT30TS74_H
+#define _LORAGW_AT30TS74_H
 
 /* -------------------------------------------------------------------------- */
-/* --- DEPENDANCIES --------------------------------------------------------- */
+/* --- DEPENDENCIES --------------------------------------------------------- */
 
 #include <stdint.h>     /* C99 types */
 #include <stdbool.h>    /* bool type */
@@ -34,22 +27,20 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 /* --- PUBLIC CONSTANTS ----------------------------------------------------- */
 
 /*
-  0x39: STTS751-0DP3F
-  0x3B: STTS751-1DP3F
-  0x38: STTS751-0DP3F on full duplex CN490 ref design
+  0x4a: AT30TS74-U1FMCB-T
   */
-static const uint8_t I2C_PORT_TEMP_SENSOR_STTS751[] = {0x39, 0x3B, 0x38};
+static const uint8_t I2C_PORT_TEMP_SENSOR_AT30TS74[] = {0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f};
 
 /* -------------------------------------------------------------------------- */
 /* --- PUBLIC FUNCTIONS ----------------------------------------------------- */
 
 /**
-@brief Configure the temperature sensor (ST TS751)
+@brief Configure the temperature sensor (AT30TS74)
 @param i2c_fd file descriptor to access the sensor through I2C
 @param i2c_addr the I2C device address of the sensor
 @return LGW_I2C_ERROR if fails, LGW_I2C_SUCCESS otherwise
 */
-int stts751_configure(int i2c_fd, uint8_t i2c_addr);
+int at30ts74_configure(int i2c_fd, uint8_t i2c_addr);
 
 /**
 @brief Get the temperature from the sensor
@@ -58,7 +49,7 @@ int stts751_configure(int i2c_fd, uint8_t i2c_addr);
 @param temperature pointer to store the temerature read from sensor
 @return LGW_I2C_ERROR if fails, LGW_I2C_SUCCESS otherwise
 */
-int stts751_get_temperature(int i2c_fd, uint8_t i2c_addr, float * temperature);
+int at30ts74_get_temperature(int i2c_fd, uint8_t i2c_addr, float * temperature);
 
 #endif
 

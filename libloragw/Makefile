@@ -24,7 +24,8 @@ LIBS := -lloragw -ltinymt32 -lrt -lm
 
 all: 	libloragw.a \
 		test_loragw_com \
-		test_loragw_i2c \
+		test_loragw_stts751 \
+		test_loragw_at30ts74 \
 		test_loragw_reg \
 		test_loragw_hal_tx \
 		test_loragw_hal_rx \
@@ -124,6 +125,7 @@ libloragw.a: $(OBJDIR)/loragw_spi.o \
 			 $(OBJDIR)/loragw_hal.o \
 			 $(OBJDIR)/loragw_lbt.o \
 			 $(OBJDIR)/loragw_stts751.o \
+			 $(OBJDIR)/loragw_at30ts74.o \
 			 $(OBJDIR)/loragw_gps.o \
 			 $(OBJDIR)/loragw_sx1302_timestamp.o \
 			 $(OBJDIR)/loragw_sx1302_rx.o \
@@ -135,7 +137,10 @@ libloragw.a: $(OBJDIR)/loragw_spi.o \
 test_loragw_com: tst/test_loragw_com.c libloragw.a
 	$(CC) $(CFLAGS) -L. -L../libtools $< -o $@ $(LIBS)
 
-test_loragw_i2c: tst/test_loragw_i2c.c libloragw.a
+test_loragw_stts751: tst/test_loragw_stts751.c libloragw.a
+	$(CC) $(CFLAGS) -L. -L../libtools $< -o $@ $(LIBS)
+
+test_loragw_at30ts74: tst/test_loragw_at30ts74.c libloragw.a
 	$(CC) $(CFLAGS) -L. -L../libtools $< -o $@ $(LIBS)
 
 test_loragw_reg: tst/test_loragw_reg.c libloragw.a

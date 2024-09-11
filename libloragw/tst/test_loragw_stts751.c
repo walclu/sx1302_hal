@@ -7,7 +7,7 @@
   (C)2019 Semtech
 
 Description:
-    Minimum test program for the loragw_i2c module
+    Minimum test program for reading temperatures from stts751 via loragw_i2c
 
 License: Revised BSD License, see LICENSE.TXT file include in the project
 */
@@ -41,6 +41,7 @@ License: Revised BSD License, see LICENSE.TXT file include in the project
 /* -------------------------------------------------------------------------- */
 /* --- PRIVATE CONSTANTS ---------------------------------------------------- */
 
+#define I2C_DEFAULT             "/dev/i2c-0"
 #define I2C_PORT_STTS751        0x39
 
 #define STTS751_REG_TEMP_H      0x00
@@ -81,6 +82,7 @@ int main(int argc, char ** argv)
     uint8_t high_byte, low_byte;
     int8_t h;
     float temperature;
+    const char* i2c_path = I2C_DEFAULT;
 
     /* Parse command line options */
     while ((i = getopt(argc, argv, "hd:")) != -1) {
@@ -92,7 +94,7 @@ int main(int argc, char ** argv)
 
             case 'd':
                 if (optarg != NULL) {
-                    /* TODO */
+                    i2c_path = optarg;
                 }
                 break;
 
@@ -114,10 +116,10 @@ int main(int argc, char ** argv)
     printf( "+++ Start of I2C test program +++\n" );
 
     /* Open I2C port expander */
-    err = i2c_linuxdev_open( I2C_DEVICE, I2C_PORT_STTS751, &i2c_dev );
+    err = i2c_linuxdev_open( i2c_path, I2C_PORT_STTS751, &i2c_dev );
     if ( (err != 0) || (i2c_dev <= 0) )
     {
-        printf( "ERROR: failed to open I2C device %s (err=%i)\n", I2C_DEVICE, err );
+        printf( "ERROR: failed to open I2C device %s (err=%i)\n", i2c_path, err );
         return EXIT_FAILURE;
     }
 
@@ -125,7 +127,7 @@ int main(int argc, char ** argv)
     err = i2c_linuxdev_read( i2c_dev, I2C_PORT_STTS751, STTS751_REG_PROD_ID, &val );
     if ( err != 0 )
     {
-        printf( "ERROR: failed to read I2C device %s (err=%i)\n", I2C_DEVICE, err );
+        printf( "ERROR: failed to read I2C device %s (err=%i)\n", i2c_path, err );
         return EXIT_FAILURE;;
     }
     switch( val )
@@ -145,7 +147,7 @@ int main(int argc, char ** argv)
     err = i2c_linuxdev_read( i2c_dev, I2C_PORT_STTS751, STTS751_REG_MAN_ID, &val );
     if ( err != 0 )
     {
-        printf( "ERROR: failed to read I2C device %s (err=%i)\n", I2C_DEVICE, err );
+        printf( "ERROR: failed to read I2C device %s (err=%i)\n", i2c_path, err );
         return EXIT_FAILURE;;
     }
     if ( val != ST_MAN_ID )
@@ -162,7 +164,7 @@ int main(int argc, char ** argv)
     err = i2c_linuxdev_read( i2c_dev, I2C_PORT_STTS751, STTS751_REG_REV_ID, &val );
     if ( err != 0 )
     {
-        printf( "ERROR: failed to read I2C device %s (err=%i)\n", I2C_DEVICE, err );
+        printf( "ERROR: failed to read I2C device %s (err=%i)\n", i2c_path, err );
         return EXIT_FAILURE;;
     }
     printf("INFO: Revision number: 0x%02X\n", val);
@@ -239,7 +241,7 @@ static void usage(void) {
     printf("~~~ Available options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf(" -h            print this help\n");
     printf(" -d <path>     use Linux I2C device driver\n");
-    printf("               => default path: " I2C_DEVICE "\n");
+    printf("               => default path: " I2C_DEFAULT "\n");
 }
 
 /* --- EOF ------------------------------------------------------------------ */
