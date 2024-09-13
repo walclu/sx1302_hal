@@ -16,15 +16,15 @@ WAIT_GPIO() {
 
 init() {
     # setup GPIOs
-    pinctrl $SX1302_RESET_PIN dl op
+    raspi-gpio set $SX1302_RESET_PIN dl op
 }
 
 reset() {
     echo "CoreCell reset through GPIO$SX1302_RESET_PIN..."
 
-    pinctrl $SX1302_RESET_PIN dl op; WAIT_GPIO
-    pinctrl $SX1302_RESET_PIN dh op; WAIT_GPIO
-    pinctrl $SX1302_RESET_PIN dl op; WAIT_GPIO
+    raspi-gpio set $SX1302_RESET_PIN dl op; WAIT_GPIO
+    raspi-gpio set $SX1302_RESET_PIN dh op; WAIT_GPIO
+    raspi-gpio set $SX1302_RESET_PIN dl op; WAIT_GPIO
 
 }
 

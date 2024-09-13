@@ -52,28 +52,26 @@ clean:
 	rm -f $(OBJDIR)/*.o
 	rm -f $(APP_NAME)
 
-ifneq ($(strip $(TARGET_IP)),)
- ifneq ($(strip $(TARGET_DIR)),)
-  ifneq ($(strip $(TARGET_USR)),)
 install:
-	@echo "---- Copying packet_forwarder files to $(TARGET_IP):$(TARGET_DIR)"
-	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
-	@scp lora_pkt_fwd $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
-install_conf:
-	@echo "---- Copying packet_forwarder conf files to $(TARGET_IP):$(TARGET_DIR)"
-	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
-	@scp global_conf.json.sx1250.* $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
-	@scp global_conf.json.sx1255.* $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
-	@scp global_conf.json.sx1257.* $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
-  else
-	@echo "ERROR: TARGET_USR is not configured in target.cfg"
-  endif
- else
-	@echo "ERROR: TARGET_DIR is not configured in target.cfg"
- endif
+ifneq ($(strip $(TARGET_DIR)),)
+	@echo "---- Copying packet_forwarder files to $(TARGET_DIR)"
+	mkdir -p $(TARGET_DIR)
+	cp lora_pkt_fwd $(TARGET_DIR)
 else
-	@echo "ERROR: TARGET_IP is not configured in target.cfg"
+	@echo "ERROR: TARGET_DIR is not configured in target.cfg"
 endif
+
+install_conf:
+ifneq ($(strip $(TARGET_DIR)),)
+	@echo "---- Copying packet_forwarder conf files to $(TARGET_DIR)"
+	mkdir -p $(TARGET_DIR)
+	cp global_conf.json.sx1250.* $(TARGET_DIR)
+	cp global_conf.json.sx1255.* $(TARGET_DIR)
+	cp global_conf.json.sx1257.* $(TARGET_DIR)
+else
+	@echo "ERROR: TARGET_DIR is not configured in target.cfg"
+endif
+
 
 ### Sub-modules compilation
 
